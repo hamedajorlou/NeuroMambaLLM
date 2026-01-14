@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroMamba - Brain-LLM for Autism Classification</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 60px 0 40px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .badge.highlight {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Architecture Diagram */
+        .architecture {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+        }
+
+        .arch-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .arch-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .arch-box {
+            background: var(--bg-dark);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            flex: 1;
+        }
+
+        .arch-box.highlight {
+            border-left-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .arch-arrow {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Feature Cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+
+        pre {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .code-filename {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .class { color: #8be9fd; }
+        .number { color: #bd93f9; }
+        .decorator { color: #ffb86c; }
+
+        /* Config Table */
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .config-table th,
+        .config-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .config-table th {
+            background: var(--bg-dark);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .config-table td:first-child {
+            font-family: 'Courier New', monospace;
+            color: var(--secondary);
+        }
+
+        /* Pipeline */
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .pipeline-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .pipeline-step::after {
+            content: '\2192';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .pipeline-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Results */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+
+            .pipeline {
+                flex-direction: column;
+            }
+
+            .pipeline-step::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">NeuroMamba v7</div>
+            <p class="tagline">Clinical Brain-LLM for Autism Spectrum Disorder Classification</p>
+            <div class="badges">
+                <span class="badge highlight">Llama-3-8B</span>
+                <span class="badge">4-bit Quantization</span>
+                <span class="badge">LoRA Fine-tuning</span>
+                <span class="badge">ABIDE Dataset</span>
+                <span class="badge">Temporal Graph Encoding</span>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#components">Components</a></li>
+            <li><a href="#config">Configuration</a></li>
+            <li><a href="#usage">Usage</a></li>
+            <li><a href="#results">Results</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>NeuroMamba is a multimodal deep learning system that combines functional MRI brain connectivity analysis with Large Language Models for automated autism spectrum disorder diagnosis. The model processes resting-state fMRI data, learns dynamic brain connectivity patterns, and generates structured clinical reports using instruction-tuned Llama-3.</p>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">&#129504;</div>
+                    <h3>Temporal Graph Encoding</h3>
+                    <p>Captures dynamic brain connectivity patterns using depthwise convolutions and learned adjacency matrices over time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#129302;</div>
+                    <h3>LLM Integration</h3>
+                    <p>Projects brain embeddings into Llama-3-8B-Instruct's semantic space for natural language clinical report generation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#9889;</div>
+                    <h3>Efficient Training</h3>
+                    <p>4-bit quantization (NF4) with LoRA adapters enables training on consumer GPUs while preserving model quality.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128202;</div>
+                    <h3>Structured Output</h3>
+                    <p>Generates valid JSON diagnostic reports following a predefined clinical schema for downstream integration.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture">
+            <h2>Model Architecture</h2>
+            <p>The system consists of three main modules: a Temporal Graph Encoder for processing fMRI signals, a Transformer-based feature refinement stage, and the frozen LLM with trainable projection layers.</p>
+
+            <div class="architecture">
+                <div class="arch-flow">
+                    <div class="arch-step">
+                        <div class="arch-box">
+                            <strong>Input:</strong> BOLD Signal [B, 100, 39]<br>
+                            <span style="color: var(--text-muted)">100 timepoints x 39 ROIs (MSDL Atlas)</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box highlight">
+                            <strong>TemporalGraphEncoder</strong><br>
+                            <span style="color: var(--text-muted)">Depthwise Conv1D &#8594; BatchNorm &#8594; ReLU &#8594; Learned Adjacency</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box">
+                            <strong>Graph Convolution:</strong> h_graph = Adj @ h<br>
+                            <span style="color: var(--text-muted)">Propagate features through learned connectivity</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box highlight">
+                            <strong>TransformerEncoder</strong> (2 layers)<br>
+                            <span style="color: var(--text-muted)">d_model=128, nhead=4, norm_first=True</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box">
+                            <strong>Cross-Attention Pooling</strong><br>
+                            <span style="color: var(--text-muted)">8 learnable query tokens &#8594; [B, 8, 128]</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box highlight">
+                            <strong>Projector + LayerNorm</strong><br>
+                            <span style="color: var(--text-muted)">Linear(128, 4096) &#8594; [B, 8, 4096] (LLM hidden size)</span>
+                        </div>
+                    </div>
+                    <div class="arch-arrow" style="text-align: center;">&#8595;</div>
+                    <div class="arch-step">
+                        <div class="arch-box">
+                            <strong>Llama-3-8B-Instruct</strong> (Frozen + LoRA)<br>
+                            <span style="color: var(--text-muted)">Concatenate brain embeds with text &#8594; Generate JSON report</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="components">
+            <h2>Key Components</h2>
+
+            <h3>1. Temporal Graph Encoder</h3>
+            <p>Processes raw fMRI timeseries to extract dynamic brain connectivity patterns.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Python</span>
+                    <span class="code-filename">run8.py:47-69</span>
+                </div>
+<pre><span class="keyword">class</span> <span class="class">TemporalGraphEncoder</span>(nn.Module):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, n_rois, latent_dim=<span class="number">64</span>):
+        <span class="keyword">super</span>().__init__()
+        self.temporal_enc = nn.Sequential(
+            nn.Conv1d(n_rois, n_rois * <span class="number">2</span>, kernel_size=<span class="number">3</span>, padding=<span class="number">1</span>, groups=n_rois),
+            nn.BatchNorm1d(n_rois * <span class="number">2</span>), nn.ReLU(),
+            nn.Conv1d(n_rois * <span class="number">2</span>, n_rois, kernel_size=<span class="number">3</span>, padding=<span class="number">1</span>, groups=n_rois),
+            nn.BatchNorm1d(n_rois), nn.ReLU()
+        )
+        self.time_proj = nn.Linear(MAX_SEQ_LEN, latent_dim)
+        self.W_q = nn.Linear(latent_dim, latent_dim)  <span class="comment"># Query projection</span>
+        self.W_k = nn.Linear(latent_dim, latent_dim)  <span class="comment"># Key projection</span>
+        self.scale = latent_dim ** <span class="number">-0.5</span>
+
+    <span class="keyword">def</span> <span class="function">forward</span>(self, x):
+        x = x.transpose(<span class="number">1</span>, <span class="number">2</span>)  <span class="comment"># [B, N, T]</span>
+        x_temp = self.temporal_enc(x)
+        h = self.time_proj(x_temp)
+        Q = self.W_q(h)
+        K = self.W_k(h)
+        scores = torch.matmul(Q, K.transpose(<span class="number">-2</span>, <span class="number">-1</span>)) * self.scale
+        adj = F.softmax(scores, dim=<span class="number">-1</span>)  <span class="comment"># Learned adjacency</span>
+        <span class="keyword">return</span> h, adj</pre>
+            </div>
+
+            <h3>2. LoRA Configuration</h3>
+            <p>Efficient fine-tuning with Low-Rank Adaptation on attention projections.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Python</span>
+                    <span class="code-filename">run8.py:94-99</span>
+                </div>
+<pre>peft_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    inference_mode=<span class="keyword">False</span>,
+    r=<span class="number">16</span>,                <span class="comment"># Rank of update matrices</span>
+    lora_alpha=<span class="number">32</span>,        <span class="comment"># Scaling factor</span>
+    lora_dropout=<span class="number">0.1</span>,
+    target_modules=[<span class="string">"q_proj"</span>, <span class="string">"v_proj"</span>, <span class="string">"k_proj"</span>, <span class="string">"o_proj"</span>]
+)</pre>
+            </div>
+
+            <h3>3. Instruction-Tuned Dataset</h3>
+            <p>Formats ABIDE fMRI data with Llama-3 chat template for supervised fine-tuning.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Python</span>
+                    <span class="code-filename">run8.py:227-232</span>
+                </div>
+<pre>full_text = (
+    <span class="string">f"&lt;|begin_of_text|&gt;&lt;|start_header_id|&gt;system&lt;|end_header_id|&gt;\n\n{SYSTEM_PROMPT}&lt;|eot_id|&gt;"</span>
+    <span class="string">f"&lt;|start_header_id|&gt;user&lt;|end_header_id|&gt;\n\n{user_input}&lt;|eot_id|&gt;"</span>
+    <span class="string">f"&lt;|start_header_id|&gt;assistant&lt;|end_header_id|&gt;\n\n{item['json']}&lt;|eot_id|&gt;"</span>
+)</pre>
+            </div>
+        </section>
+
+        <section id="config">
+            <h2>Configuration</h2>
+
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MAX_SUBJECTS</td>
+                        <td>100</td>
+                        <td>Number of subjects from ABIDE dataset</td>
+                    </tr>
+                    <tr>
+                        <td>BATCH_SIZE</td>
+                        <td>4</td>
+                        <td>Training batch size</td>
+                    </tr>
+                    <tr>
+                        <td>GRAD_ACCUM_STEPS</td>
+                        <td>4</td>
+                        <td>Gradient accumulation steps (effective batch = 16)</td>
+                    </tr>
+                    <tr>
+                        <td>EPOCHS</td>
+                        <td>15</td>
+                        <td>Number of training epochs</td>
+                    </tr>
+                    <tr>
+                        <td>LR</td>
+                        <td>2e-4</td>
+                        <td>Learning rate with cosine annealing</td>
+                    </tr>
+                    <tr>
+                        <td>N_ROIS</td>
+                        <td>39</td>
+                        <td>Brain regions (MSDL atlas)</td>
+                    </tr>
+                    <tr>
+                        <td>MAX_SEQ_LEN</td>
+                        <td>100</td>
+                        <td>fMRI timepoints (TR windows)</td>
+                    </tr>
+                    <tr>
+                        <td>d_latent</td>
+                        <td>128</td>
+                        <td>Latent dimension for brain encoder</td>
+                    </tr>
+                    <tr>
+                        <td>LoRA r</td>
+                        <td>16</td>
+                        <td>LoRA rank</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="usage">
+            <h2>Training Pipeline</h2>
+
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <div class="step-number">1</div>
+                    <h3>Data Loading</h3>
+                    <p>Fetch ABIDE fMRI with MSDL parcellation</p>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">2</div>
+                    <h3>Preprocessing</h3>
+                    <p>Z-score, pad/truncate to 100 TRs</p>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">3</div>
+                    <h3>Training</h3>
+                    <p>15 epochs with gradient accumulation</p>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-number">4</div>
+                    <h3>Evaluation</h3>
+                    <p>Generate reports, parse JSON, compute accuracy</p>
+                </div>
+            </div>
+
+            <h3>Quick Start</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Bash</span>
+                    <span class="code-filename">Terminal</span>
+                </div>
+<pre><span class="comment"># Install dependencies</span>
+pip install torch transformers peft bitsandbytes nilearn pandas scikit-learn
+
+<span class="comment"># Set Hugging Face token for Llama-3 access</span>
+export HF_TOKEN=<span class="string">"your_token_here"</span>
+
+<span class="comment"># Run training + evaluation</span>
+python run8.py</pre>
+            </div>
+
+            <h3>Output Format</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">JSON</span>
+                    <span class="code-filename">Model Output</span>
+                </div>
+<pre><span class="comment">// ASD Prediction</span>
+{<span class="string">"Diagnosis"</span>: <span class="string">"Autism Spectrum Disorder (ASD)"</span>}
+
+<span class="comment">// Control Prediction</span>
+{<span class="string">"Diagnosis"</span>: <span class="string">"Typically Developing Control (TC)"</span>}</pre>
+            </div>
+        </section>
+
+        <section id="results">
+            <h2>Expected Results</h2>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value">80</div>
+                    <div class="result-label">Training Samples</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">20</div>
+                    <div class="result-label">Test Samples</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">15</div>
+                    <div class="result-label">Training Epochs</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">~4GB</div>
+                    <div class="result-label">VRAM Usage (4-bit)</div>
+                </div>
+            </div>
+
+            <h3>System Prompt</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Text</span>
+                    <span class="code-filename">SYSTEM_PROMPT</span>
+                </div>
+<pre>You are an expert neuroscientist. Analyze the provided brain connectivity embedding.
+Output valid JSON only.
+Format: {"Diagnosis": "Autism Spectrum Disorder (ASD)"} or {"Diagnosis": "Typically Developing Control (TC)"}.</pre>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>NeuroMamba - Brain-LLM Research Project</p>
+            <p style="margin-top: 10px;">Built with PyTorch, Transformers, PEFT, and Nilearn</p>
+            <p style="margin-top: 10px;"><a href="https://github.com/hamedajorlou/MambaFMRI">View on GitHub</a></p>
+        </div>
+    </footer>
+</body>
+</html>
